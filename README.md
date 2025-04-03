@@ -1,53 +1,58 @@
-# JuliaScope - Advanced Subdomain Enumeration with Julia
+# JuliaScope - Multithreaded Subdomain Recon
 
-JuliaScope is a high-performance, multithreaded subdomain enumeration tool leveraging the power of Julia. It queries `crt.sh`, an open-source certificate transparency log database, to extract subdomains efficiently. Designed for penetration testers, bug bounty hunters, and cybersecurity researchers, JuliaScope provides an optimized solution for domain reconnaissance.
+JuliaScope is a high-performance, multithreaded subdomain enumeration tool built in Julia. Leveraging `crt.sh` and concurrent processing, it efficiently retrieves subdomains for reconnaissance, making it ideal for security professionals and penetration testers.
 
 ## 🚀 Features
-- **Multithreading**: Parallelized HTTP requests for blazing-fast enumeration.
-- **Optimized Parsing**: Uses `JSON3.jl` for high-performance JSON handling.
-- **Colored CLI Output**: Enhanced terminal aesthetics with `Crayons.jl`.
-- **Efficient Filtering**: Removes wildcard and duplicate subdomains.
-- **Lightweight & Fast**: Built in Julia for superior speed and low overhead.
+- **Parallelized Execution**: Fast, asynchronous querying.
+- **Optimized Data Parsing**: Uses `JSON3.jl` for rapid processing.
+- **User-Friendly UI**: Colorized output with `Crayons.jl`.
+- **Intelligent Filtering**: Removes duplicates and wildcard entries.
+- **Lightweight & Efficient**: Minimal system overhead.
 
 ## 🛠 Prerequisites
 - [Install Julia](https://julialang.org/downloads/)
-- Ensure internet connectivity for API queries.
+- Internet connectivity for API queries.
 
 ## 📌 Installation
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/JuliaScope.git
-   cd JuliaScope
-   ```
-2. Install required Julia packages:
-   ```julia
-   using Pkg
-   Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
-   ```
+```sh
+git clone https://github.com/yourusername/JuliaScope.git
+cd JuliaScope
+```
+```julia
+using Pkg
+Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
+```
 
 ## 🔧 Usage
-1. Launch the Julia REPL:
+1. **Open Julia**
    ```sh
    julia
    ```
-2. Navigate to the project directory in Julia:
+   ![Step 1](assets/1.png)
+
+2. **Navigate to the JuliaScope directory**
    ```julia
    cd("path/to/JuliaScope")
    ```
-3. Load the script:
+   ![Step 2](assets/2.png)
+
+3. **Include the script**
    ```julia
    include("subdomain.jl")
    ```
-4. Enter a domain when prompted, and retrieve subdomains instantly.
+   ![Step 3](assets/3.png)
 
-## 🔜 Upcoming Enhancements
-- **Standalone CLI Tool**: Convert JuliaScope into a command-line binary for Linux & Windows.
-- **Shodan Integration**: Cross-reference subdomains with Shodan for deeper reconnaissance.
-- **Expanded Multithreading**: Further optimize performance via Julia’s `Threads.@spawn`.
+4. **Enter the target domain when prompted**
+   - The tool will fetch and display subdomains.
+   ![Step 4](assets/4.png)
 
-## 🛡 Disclaimer
-JuliaScope is intended for legal security research and educational purposes only. Unauthorized usage against domains you do not own is strictly prohibited.
+## 🔜 Roadmap
+- **Standalone CLI**: Linux & Windows compatibility.
+- **Shodan API Integration**: Advanced asset fingerprinting.
+- **Enhanced Multithreading**: Optimized parallel execution.
+
+## 🛡 Legal & Ethical Use
+Use JuliaScope only for legal penetration testing and research. Unauthorized use is prohibited.
 
 ---
-🖥 **Author**: Muffin | 
-
+🖥 **Author**: Mooofin
