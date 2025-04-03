@@ -28,8 +28,8 @@ function get_subdomains(domain)
         for entry in data
             if haskey(entry, "name_value")
                 for sub in split(entry["name_value"], '\n')  # Handle multi-line entries
-                    clean_sub = strip(sub)  # Remove extra spaces
-                    if !startswith(clean_sub, "*")  # Remove wildcard entries
+                    clean_sub = strip(sub)  
+                    if !startswith(clean_sub, "*")  
                         push!(subdomains, clean_sub)
                     end
                 end
