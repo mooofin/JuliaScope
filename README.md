@@ -49,5 +49,5 @@ JuliaScope is a high-performance, multithreaded subdomain enumeration tool lever
 JuliaScope is intended for legal security research and educational purposes only. Unauthorized usage against domains you do not own is strictly prohibited.
 
 ---
-🖥 **Author**: Muffin | 🌐 *Cybersecurity & AI Enthusiast*
+🖥 **Author**: Muffin | 
 
