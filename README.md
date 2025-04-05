@@ -6,7 +6,7 @@
 
 ## Core Features
 
-### ⚡ High-Throughput Parallelism
+###  High-Throughput Parallelism
 JuliaScope utilizes Julia’s native concurrency capabilities via `pmap` to perform asynchronous, distributed subdomain resolution across multiple domain permutations.
 
 ```julia
@@ -27,7 +27,7 @@ function get_subdomains(domain; max_workers=4)
 end
 ```
 
-### 🔍 Expanded Domain Intelligence
+###  Expanded Domain Intelligence
 Subdomain detection is augmented with intelligent permutations and crt.sh API integration. JuliaScope automatically targets conventional subdomains and parses Certificate Transparency logs to detect obscure endpoints.
 
 Default domain list includes:
@@ -36,7 +36,7 @@ Default domain list includes:
 - `mail.example.com`
 - `api.example.com`
 
-### 💡 Optimized Data Structures
+###  Optimized Data Structures
 Results are stored in a `Set` to ensure deduplication and optimal memory usage during large-scale enumeration.
 
 ```julia
@@ -44,7 +44,7 @@ subdomains = Set()
 push!(subdomains, "www.example.com")
 ```
 
-### 🔐 Fault-Tolerant Architecture
+###  Fault-Tolerant Architecture
 Resilient to network interruptions or HTTP errors via granular error handling inside processing chunks:
 
 ```julia
