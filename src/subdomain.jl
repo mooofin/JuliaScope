@@ -143,21 +143,30 @@ end
 # UI Header
 print_logo()
 
-# User Input
-print(Crayons.crayon"bold yellow"("\nEnter the domain to search subdomains for: "))
-domain = strip(readline())
+# --- Loop for Continuous Domain Search ---
+while true
+    print(Crayons.crayon"bold yellow"("\nEnter the domain to search subdomains for: "))
+    domain = strip(readline())
 
-if isempty(domain)
-    println(Crayons.crayon"bold red"("\nError: Domain cannot be empty!"))
-else
-    subdomains = get_subdomains(domain)
-
-    if isempty(subdomains)
-        println(Crayons.crayon"bold red"("\nNo subdomains found for $domain.\n"))
+    if isempty(domain)
+        println(Crayons.crayon"bold red"("\nError: Domain cannot be empty!"))
     else
-        println(Crayons.crayon"bold green"("\n[+] Found $(length(subdomains)) subdomains for $domain:\n"))
-        for sub in subdomains
-            println(Crayons.crayon"cyan"(" - $sub"))
+        subdomains = get_subdomains(domain)
+
+        if isempty(subdomains)
+            println(Crayons.crayon"bold red"("\nNo subdomains found for $domain.\n"))
+        else
+            println(Crayons.crayon"bold green"("\n[+] Found $(length(subdomains)) subdomains for $domain:\n"))
+            for sub in subdomains
+                println(Crayons.crayon"cyan"(" - $sub"))
+            end
         end
+    end
+
+    print(Crayons.crayon"bold magenta"("\nDo you want to scan another domain? (y/n): "))
+    choice = lowercase(strip(readline()))
+    if choice != "y"
+        println(Crayons.crayon"bold blue"("\nThank you for using the Subdomain Finder. Goodbye!\n"))
+        break
     end
 end
