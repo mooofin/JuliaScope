@@ -6,7 +6,7 @@
 
 ## Core Features
 
-###  High-Throughput Parallelism
+### High-Throughput Parallelism
 JuliaScope utilizes Julia’s native concurrency capabilities via `pmap` to perform asynchronous, distributed subdomain resolution across multiple domain permutations.
 
 ```julia
@@ -27,7 +27,7 @@ function get_subdomains(domain; max_workers=4)
 end
 ```
 
-###  Expanded Domain Intelligence
+### Expanded Domain Intelligence
 Subdomain detection is augmented with intelligent permutations and crt.sh API integration. JuliaScope automatically targets conventional subdomains and parses Certificate Transparency logs to detect obscure endpoints.
 
 Default domain list includes:
@@ -36,7 +36,7 @@ Default domain list includes:
 - `mail.example.com`
 - `api.example.com`
 
-###  Optimized Data Structures
+### Optimized Data Structures
 Results are stored in a `Set` to ensure deduplication and optimal memory usage during large-scale enumeration.
 
 ```julia
@@ -44,7 +44,7 @@ subdomains = Set()
 push!(subdomains, "www.example.com")
 ```
 
-###  Fault-Tolerant Architecture
+### Fault-Tolerant Architecture
 Resilient to network interruptions or HTTP errors via granular error handling inside processing chunks:
 
 ```julia
@@ -89,21 +89,25 @@ Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
 ```sh
 julia
 ```
+![Step 1](assets/1.png)
 
 2. **Navigate to Source Directory**
 ```julia
 cd("path/to/JuliaScope")
 ```
+![Step 2](assets/2.png)
 
 3. **Load Main Script**
 ```julia
 include("subdomain.jl")
 ```
+![Step 3](assets/3.png)
 
 4. **Initiate Scan**
 ```julia
 subdomains = get_subdomains("example.com", max_workers=8)
 ```
+![Step 4](assets/4.png)
 
 Interactive output will display resolved subdomains in real time with colorized formatting (via `Crayons.jl`).
 
@@ -141,11 +145,10 @@ We welcome contributions that enhance capability, efficiency, or compatibility. 
 - Submit a pull request with a descriptive commit message
 - For significant proposals, open an issue for discussion first
 
+
+
 ---
-
-
 
 ## Author
 Crafted with precision by **Mooofin**. For ideas, improvements, or collaboration—feel free to reach out or submit an issue.
-
 
