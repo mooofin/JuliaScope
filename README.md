@@ -150,5 +150,4 @@ We welcome contributions that enhance capability, efficiency, or compatibility. 
 ---
 
 ## Author
-Crafted with precision by **Mooofin**. For ideas, improvements, or collaboration—feel free to reach out or submit an issue.
-
+made with love my moofin , no corporate fluff :3
