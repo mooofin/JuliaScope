@@ -150,4 +150,4 @@ We welcome contributions that enhance capability, efficiency, or compatibility. 
 ---
 
 ## Author
-made with love my moofin , no corporate fluff :3
+made with love by moofin , no corporate fluff :3
