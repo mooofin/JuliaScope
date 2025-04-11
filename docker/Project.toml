@@ -1,0 +1,10 @@
+name = "MyJuliaProject"
+uuid = "25741535-e4e7-4304-8e22-52200bdf5c7d"
+authors = ["Unknown "]
+version = "0.1.0"
+
+[deps]
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+
+[compat]
+HTTP = "1.10.16"
