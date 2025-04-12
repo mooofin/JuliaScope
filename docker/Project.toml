@@ -1,6 +1,6 @@
 name = "MyJuliaProject"
 uuid = "25741535-e4e7-4304-8e22-52200bdf5c7d"
-authors = ["Unknown "]
+authors = ["mooofin "]
 version = "0.1.0"
 
 [deps]
