@@ -11,4 +11,4 @@ rpmbuild -ba SPECS/*.spec
 
 # Copy
 cp -r ~/rpmbuild/SRPMS/juliascope-$version.fc*.src.rpm /opt/output
-cp -r ~/rpmbuild/RPMS/$(uname -m)/juliascope-$version.fc*.$(uname -m).rpm /opt/output
+cp -r ~/rpmbuild/RPMS/noarch/juliascope-$version.fc*.noarch.rpm /opt/output
