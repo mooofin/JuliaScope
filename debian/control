@@ -1,0 +1,15 @@
+Source: juliascope
+Section: utils
+Priority: optional
+Maintainer: mooofin <you@example.com>
+Build-Depends: debhelper-compat (= 11)
+Standards-Version: 4.6.0
+Rules-Requires-Root: no
+
+Package: juliascope
+Architecture: all
+Depends: ${misc:Depends}, julia
+Description: CLI Domain Scanner in Julia
+    A CLI tool made using Julia with the 
+    power of multithreading to scan and 
+    find subdomains

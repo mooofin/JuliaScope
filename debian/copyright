@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: juliascope
+Source: none
+
+Files: *
+Copyright: 2025 mooofin
+License: Proprietary
+
+License: Proprietary
+ No license information has been provided. This software is not yet licensed
+ for redistribution under a free or open-source license.

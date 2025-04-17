@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Debian Build script for moofin/JuliaScope (https://github.com/mooofin/JuliaScope)
+
+ver=1.0.0
+version=1.0.0-1
+
+# Prepare source
+wget --output-document v${ver}.zip "https://github.com/mooofin/JuliaScope/archive/refs/heads/main.zip"
+unzip main.zip
+cd JuliaScope-main
+
+# Build
+echo "yes" | debuild -us -uc
+
+# Copy output
+cp ../juliascope_*.deb /opt/output

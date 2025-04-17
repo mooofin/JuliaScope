@@ -1,0 +1,13 @@
+FROM debian:11
+
+RUN apt update && apt upgrade -y
+RUN apt install devscripts debhelper zip wget -y
+RUN apt install julia -y
+
+ADD deploy /root
+
+WORKDIR /root
+
+VOLUME /opt/output
+
+CMD ["bash", "./deploy"]
