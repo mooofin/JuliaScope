@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# RPM Build script for mooofin/JuliaScope (https://github.com/mooofin/JuliaScope)
+
+version="1.0.0-1"
+
+
+# Build
+spectool -g -R SPECS/*.spec
+rpmbuild -ba SPECS/*.spec
+
+# Copy
+cp -r ~/rpmbuild/SRPMS/juliascope-$version.fc*.src.rpm /opt/output
+cp -r ~/rpmbuild/RPMS/$(uname -m)/juliascope-$version.fc*.$(uname -m).rpm /opt/output

@@ -6,7 +6,7 @@ ver=1.0.0
 version=1.0.0-1
 
 # Prepare source
-wget --output-document v${ver}.zip "https://github.com/mooofin/JuliaScope/archive/refs/heads/main.zip"
+wget "https://github.com/mooofin/JuliaScope/archive/refs/heads/main.zip"
 unzip main.zip
 cd JuliaScope-main
 
