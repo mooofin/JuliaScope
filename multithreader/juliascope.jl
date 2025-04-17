@@ -1,3 +1,6 @@
+using Pkg
+Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
+
 using HTTP, JSON3, Crayons
 using Distributed
 
@@ -156,7 +159,7 @@ function scan_subdomain(subdomain::String)
 
         return vulnerabilities
     catch e
-        println(Crayons.crayon"bold red"("  × Error: ", e))
+        println(Crayons.crayon"bold red"("  × Error: ", sprint(showerror, e)))
         return ["scan_failed"]
     end
 end
