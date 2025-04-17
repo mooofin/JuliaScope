@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec julia /usr/share/juliascope/src/juliascope.jl

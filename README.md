@@ -99,7 +99,7 @@ cd("path/to/JuliaScope")
 
 3. **Load Main Script**
 ```julia
-include("subdomain.jl")
+include("juliascope.jl")
 ```
 ![Step 3](assets/3.png)
 

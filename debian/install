@@ -1,0 +1,2 @@
+scripts/juliascope  usr/bin
+src/juliascope.jl   usr/share/juliascope/src
