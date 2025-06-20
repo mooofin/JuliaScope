@@ -4,9 +4,9 @@ Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
 using HTTP, JSON3, Crayons
 using Distributed
 
-# Ensure there are workers for parallelism
+
 if nprocs() == 1
-    addprocs(4)  # Add 4 workers for parallel processing
+    addprocs(4)  
 end
 
 @everywhere using HTTP, JSON3
