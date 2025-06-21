@@ -18,7 +18,7 @@ const TEXT_LINES = [
 
     # Meta text
     "Subdomain Finder",
-    
+    "՞⸝⸝>ㅤ  ̫ <⸝⸝՞"
     "Author: Muffin"
 ]
 
