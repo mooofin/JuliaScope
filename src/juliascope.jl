@@ -31,12 +31,173 @@ const SPINNER_CHARS = ['|', '/', '-', '\\']
 const CRAYON_STYLE = Crayons.crayon"bold blue"
 
 const VULNERABILITY_PATTERNS = Dict(
-    :sql_injection => ["' OR '1'='1", "UNION SELECT", "sqlmap"],
-    :xss => ["<script>", "alert(", "onerror="],
-    :directory_traversal => ["../", "~/.ssh/"],
-    :exposed_admin => ["/admin", "/wp-admin", "/manager"],
-    :misconfiguration => ["Server: Apache", "X-Powered-By: PHP"]
+    :sql_injection => [
+        "' OR '1'='1",
+        "\" OR \"1\"=\"1",
+        "' OR 1=1--",
+        "' OR 1=1#",
+        "' OR 'a'='a",
+        "1' OR '1'='1' --",
+        "'; DROP TABLE",
+        "'; EXEC xp_cmdshell",
+        "UNION SELECT",
+        "SELECT * FROM",
+        "sqlmap",
+        "information_schema",
+        "SLEEP(",
+        "benchmark(",
+        "LOAD_FILE(",
+        "INTO OUTFILE",
+        "OR TRUE--",
+        "'--",
+        "'#",
+        "%27%20OR%201=1",
+        "xp_"
+    ],
+
+    :xss => [
+        "<script>",
+        "</script>",
+        "<img src=x onerror=",
+        "javascript:",
+        "onerror=",
+        "onload=",
+        "<svg onload=",
+        "document.cookie",
+        "alert(",
+        "prompt(",
+        "confirm(",
+        "<iframe",
+        "<body onload=",
+        "<object data=",
+        "<embed src=",
+        "<link rel=",
+        "<meta http-equiv=",
+        "<base href=",
+        "<video src=",
+        "<audio src=",
+        "<marquee"
+    ],
+
+    :directory_traversal => [
+        "../",
+        "..\\",
+        "/etc/passwd",
+        "/etc/shadow",
+        "/proc/self/environ",
+        "C:\\Windows\\System32",
+        "../../boot.ini",
+        "../../../../",
+        "~/.ssh/",
+        "/root/.bash_history",
+        "/WEB-INF/web.xml",
+        "/windows/win.ini"
+    ],
+
+    :exposed_admin => [
+        "/admin",
+        "/admin/",
+        "/admin/login",
+        "/administrator",
+        "/wp-admin",
+        "/wp-login.php",
+        "/cpanel",
+        "/login",
+        "/dashboard",
+        "/backend",
+        "/manager",
+        "/system",
+        "/auth",
+        "/root",
+        "/admin.php",
+        "/phpmyadmin"
+    ],
+
+    :misconfiguration => [
+        "Server: Apache",
+        "Server: nginx",
+        "X-Powered-By: PHP",
+        "X-Powered-By: ASP.NET",
+        "X-AspNet-Version",
+        "X-Drupal-Cache",
+        "X-Jenkins",
+        "X-Backend-Server",
+        "Access-Control-Allow-Origin: *",
+        "Public-Key-Pins",
+        "index of /",
+        "Directory listing for",
+        "open directory",
+        "Exposed directory"
+    ],
+
+    :sensitive_files => [
+        ".env",
+        ".git/config",
+        ".htaccess",
+        ".htpasswd",
+        "config.php",
+        "settings.py",
+        "wp-config.php",
+        "credentials.json",
+        "id_rsa",
+        "secrets.yml",
+        "docker-compose.yml",
+        "api_key",
+        "auth_token",
+        "access_token"
+    ],
+
+    :information_disclosure => [
+        "Fatal error:",
+        "Warning: include",
+        "Notice: Undefined",
+        "Error on line",
+        "Stack trace:",
+        "Traceback (most recent call last):",
+        "java.lang.NullPointerException",
+        "org.springframework",
+        "at sun.reflect",
+        "PHP Parse error",
+        "system.NullReferenceException",
+        "System.InvalidOperationException",
+        "RuntimeException",
+        "Unhandled Exception",
+        "SQLException"
+    ],
+
+    :ssrf => [
+        "127.0.0.1",
+        "localhost",
+        "::1",
+        "0.0.0.0",
+        "169.254.169.254",
+        "metadata.google.internal",
+        "internal.cloudapp.net",
+        "awsinstance.amazonaws.com",
+        "169.254.170.2",
+        "azure.com"
+    ],
+
+    :rce => [
+        "system(",
+        "exec(",
+        "shell_exec(",
+        "passthru(",
+        "popen(",
+        "proc_open(",
+        "`whoami`",
+        "`uname -a`",
+        "`id`",
+        "eval(",
+        "assert(",
+        "base64_decode(",
+        "import os",
+        "os.system(",
+        "subprocess.call(",
+        "Runtime.getRuntime().exec("
+    ]
 )
+
 
 function pad_center(text::String, width::Int)
     padding_total = max(0, width - length(text))
