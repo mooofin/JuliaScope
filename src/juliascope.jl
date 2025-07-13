@@ -1,12 +1,25 @@
-using Pkg
-Pkg.add(["HTTP", "JSON3", "Crayons", "ThreadsX"])
+import Pkg
+# --- Ensure Required Packages Are Installed ---
+function ensure_packages()
+    required = ["HTTP", "JSON3", "Crayons", "ThreadsX", "ArgParse"]
+    installed = keys(Pkg.installed())
+    to_install = filter(pkg -> !(pkg in installed), required)
+    if !isempty(to_install)
+        println("Installing missing packages: ", join(to_install, ", "))
+        Pkg.add(to_install)
+    end
+end
+ensure_packages()
 
 using HTTP, JSON3, Crayons
 using Distributed
+using Sockets
+using ArgParse
+using ThreadsX
 
-
+# Ensure there are workers for parallelism
 if nprocs() == 1
-    addprocs(4)  
+    addprocs(4)  # Add 4 workers for parallel processing
 end
 
 @everywhere using HTTP, JSON3
@@ -14,11 +27,24 @@ end
 # --- Configuration ---
 const BOX_WIDTH = 38
 const TEXT_LINES = [ 
-
+    # ASCII Art
+    "⣿⣿⣿⣿⣿⣿⠿⣛⣿⣿⣿⠿⠿⠿⠿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿",
+    "⣿⣿⣿⢿⣫⠖⠛⢁⠁⢠⣶⢆⣿⣿⣿⣿⣿⣶⣦⣭⡛⠿⣿⣿⣿⣿⣿",
+    "⣿⡟⣵⠋⢐⣯⠀⠌⢠⡿⠟⣸⣯⣽⣿⡭⢟⢿⣿⡿⣿⡷⣌⠪⡻⣿⣿",
+    "⢯⡾⠃⡆⠃⢀⠔⣐⡵⢞⣴⢿⣫⣵⣯⣾⣿⣳⢹⢻⣿⣿⡞⡧⡹⣞⣿",
+    "⣿⡅⡀⠁⢀⢐⣸⣭⢾⣫⣾⣿⣿⣿⣿⡿⣱⣳⣷⡁⣿⣿⣿⣱⢣⢹⣾",
+    "⣿⢃⣾⡏⢯⣾⢟⣵⣿⣿⣿⣿⣿⡿⢋⣜⣵⣿⣿⣿⢸⣿⣿⡏⡟⡈⣿",
+    "⡟⣸⡿⢱⡼⣳⣿⣿⣿⣿⣿⠿⢋⡴⣢⣾⣭⣻⣿⣿⣾⣿⣿⣷⣧⡇⣿",
+    "⠃⣋⣴⡇⣾⣿⣿⣿⠿⠛⢕⢕⣽⣾⡻⠛⠋⠛⠻⢿⡇⣿⣿⣿⣿⡇⣿",
+    "⡇⣿⣿⡇⡍⠩⢷⠠⣔⣎⢱⣿⣿⣿⣾⠤⣼⣬⢤⣌⣻⣿⣿⡿⡿⡇⣿",
+    "⣧⢹⡏⡇⢦⢶⣿⣖⣭⣥⣿⣿⣿⣿⣿⣧⣭⣥⣿⣿⢻⣏⣿⣇⡇⡇⢿",
+    "⣿⢸⡇⣧⡐⣨⡻⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⣫⢸⢯⣿⢻⢳⣧⢸",
+    "⣿⡀⣷⢻⠣⢸⣿⣶⣭⣟⠛⢿⠿⠟⢛⡉⢁⣾⣿⣿⣾⣸⡟⣛⣾⣿⣿",
+    "⣿⣷⣀⣼⣠⡬⣿⡿⡩⠀⠀⣀⢄⣬⠀⠀⠒⣤⣭⠇⠏⣟⣳⢟⣿⣿⣿",
+    "⣿⣿⣿⣿⣟⠀⠀⠄⣡⡆⠆⠰⡤⢊⣧⡤⠈⠛⣛⠀⠀⣙⣽⣿⣿⣿⣿",
+    "⣿⣿⣿⣿⣿⣿⣶⣧⣿⣿⡉⠑⣾⣟⣻⡇⣈⣭⣭⣶⣿⣿⣿⣿⣿⣿⣿",
 
     # Meta text
-    "Subdomain Finder",
-    "՞⸝⸝>ㅤ  ̫ <⸝⸝՞"
     "Author: Muffin"
 ]
 
@@ -54,7 +80,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "%27%20OR%201=1",
         "xp_"
     ],
-
     :xss => [
         "<script>",
         "</script>",
@@ -78,7 +103,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "<audio src=",
         "<marquee"
     ],
-
     :directory_traversal => [
         "../",
         "..\\",
@@ -93,7 +117,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "/WEB-INF/web.xml",
         "/windows/win.ini"
     ],
-
     :exposed_admin => [
         "/admin",
         "/admin/",
@@ -112,7 +135,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "/admin.php",
         "/phpmyadmin"
     ],
-
     :misconfiguration => [
         "Server: Apache",
         "Server: nginx",
@@ -129,7 +151,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "open directory",
         "Exposed directory"
     ],
-
     :sensitive_files => [
         ".env",
         ".git/config",
@@ -146,7 +167,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "auth_token",
         "access_token"
     ],
-
     :information_disclosure => [
         "Fatal error:",
         "Warning: include",
@@ -164,7 +184,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "Unhandled Exception",
         "SQLException"
     ],
-
     :ssrf => [
         "127.0.0.1",
         "localhost",
@@ -177,7 +196,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "169.254.170.2",
         "azure.com"
     ],
-
     :rce => [
         "system(",
         "exec(",
@@ -197,7 +215,6 @@ const VULNERABILITY_PATTERNS = Dict(
         "Runtime.getRuntime().exec("
     ]
 )
-
 
 function pad_center(text::String, width::Int)
     padding_total = max(0, width - length(text))
@@ -338,87 +355,116 @@ function get_subdomains(domain::String; max_workers::Int=4)
     return sort(collect(subdomains))
 end
 
-# --- Main Program ---
-animate_loading_logo()
-
-while true
-    print(Crayons.crayon"bold yellow"("\nEnter the domain to search subdomains for: "))
-    domain_input = strip(readline())
-    domain = String(domain_input)
-
-    if isempty(domain)
-        println(Crayons.crayon"bold red"("\nError: Domain cannot be empty!"))
-    else
-        println(Crayons.crayon"bold green"("\n[+] Scanning $domain with multithreading...\n"))
-        subdomains = get_subdomains(domain)
-
-        if isempty(subdomains)
-            println(Crayons.crayon"bold red"("\nNo subdomains found for $domain.\n"))
-        else
-            println(Crayons.crayon"bold green"("\n[+] Found $(length(subdomains)) subdomains for $domain:\n"))
-            for sub in subdomains
-                println(Crayons.crayon"cyan"(" - $sub"))
-            end
-
-            println(Crayons.crayon"bold magenta"("\nSelect subdomains to scan for vulnerabilities:"))
-            println(Crayons.crayon"bold cyan"("Enter 'all' to scan all, or comma-separated numbers (e.g., 1,3,5):\n"))
-
-            for (i, sub) in enumerate(subdomains)
-                println(Crayons.crayon"cyan"("[$i] $sub"))
-            end
-
-            print(Crayons.crayon"bold magenta"("\nYour choice: "))
-            selection_input = strip(lowercase(readline()))
-
-            selected_subdomains = String[]
-            if selection_input == "all"
-                selected_subdomains = subdomains
-            else
-                try
-                    indices = parse.(Int, split(selection_input, ',')) |> x -> filter(i -> i ≥ 1 && i ≤ length(subdomains), x)
-                    selected_subdomains = [subdomains[i] for i in indices]
-                catch
-                    println(Crayons.crayon"bold red"("Invalid input! Defaulting to scan all subdomains."))
-                    selected_subdomains = subdomains
+function brute_force_subdomains(domain::String, wordlist_path::String="wordlist.txt"; max_workers::Int=8)
+    words = String[]
+    try
+        open(wordlist_path, "r") do f
+            for line in eachline(f)
+                word = strip(line)
+                if !isempty(word)
+                    push!(words, word)
                 end
-            end
-
-            if !isempty(selected_subdomains)
-                println("\n" * "="^50)
-                println(Crayons.crayon"bold blue"("VULNERABILITY ASSESSMENT REPORT"))
-                println("="^50)
-
-                report = scan_all_subdomains(selected_subdomains)
-
-                if isempty(report)
-                    println(Crayons.crayon"bold green"("\nNo vulnerabilities detected across selected subdomains"))
-                else
-                    for (subdomain, vulns) in report
-                        println("\n" * "-"^50)
-                        println(Crayons.crayon"bold yellow"("Subdomain: $subdomain"))
-                        println("-"^50)
-                        for vuln in vulns
-                            severity = if occursin("sql_injection", vuln) || occursin("xss", vuln)
-                                Crayons.crayon"bold red"("[CRITICAL] ")
-                            elseif occursin("admin", vuln) || occursin("traversal", vuln)
-                                Crayons.crayon"red"("[HIGH] ")
-                            else
-                                Crayons.crayon"yellow"("[MEDIUM] ")
-                            end
-                            println(severity , vuln)
-                        end
-                    end
-                end
-            else
-                println(Crayons.crayon"bold red"("\nNo valid subdomains selected. Skipping scan."))
             end
         end
+    catch
+        println(Crayons.crayon"bold red"("Could not read wordlist at $wordlist_path"))
+        return String[]
     end
+    candidates = ["$word.$domain" for word in words]
+    function resolve_subdomain(sub)
+        try
+            ip = getipaddr(sub)
+            return sub
+        catch
+            return nothing
+        end
+    end
+    found = ThreadsX.map(resolve_subdomain, candidates)
+    return sort(filter(!isnothing, found))
+end
 
-    print(Crayons.crayon"bold magenta"("\nDo you want to scan another domain? (y/n): "))
-    choice = lowercase(strip(readline()))
-    if choice != "y"
-        println(Crayons.crayon"bold blue"("\nThank you for using the Subdomain Finder. Goodbye!\n"))
-        break
+function show_help()
+    println("""
+JuliaScope - Subdomain and Vulnerability Scanner
+
+Usage:
+  julia juliascope.jl -s <domain>      # Search for subdomains (crt.sh + brute-force)
+  julia juliascope.jl -dns <domain>    # Only brute-force subdomains using wordlist
+  julia juliascope.jl -ss <domain>     # Scan domain and subdomains for vulnerabilities
+  julia juliascope.jl -h               # Show this help menu
+""")
+end
+
+function main()
+    args = copy(ARGS)
+    if isempty(args) || "-h" in args || "--help" in args
+        show_help()
+        return
     end
+    if "-s" in args
+        idx = findfirst(x -> x == "-s", args)
+        if idx < length(args)
+            domain = args[idx+1]
+            println(Crayons.crayon"bold green"("\n[+] Scanning $domain for subdomains (crt.sh + brute-force)...\n"))
+            subdomains = get_subdomains(domain)
+            brute_subdomains = brute_force_subdomains(domain, "wordlist.txt")
+            all_subdomains = sort(union(subdomains, brute_subdomains))
+            if isempty(all_subdomains)
+                println(Crayons.crayon"bold red"("\nNo subdomains found for $domain.\n"))
+            else
+                println(Crayons.crayon"bold green"("\n[+] Found $(length(all_subdomains)) subdomains for $domain:\n"))
+                for sub in all_subdomains
+                    println(Crayons.crayon"cyan"(" - $sub"))
+                end
+            end
+        else
+            println("Missing domain after -s")
+            show_help()
+        end
+        return
+    elseif "-dns" in args
+        idx = findfirst(x -> x == "-dns", args)
+        if idx < length(args)
+            domain = args[idx+1]
+            println(Crayons.crayon"bold green"("\n[+] Brute-forcing subdomains for $domain...\n"))
+            brute_subdomains = brute_force_subdomains(domain, "wordlist.txt")
+            if isempty(brute_subdomains)
+                println(Crayons.crayon"bold red"("\nNo subdomains found for $domain.\n"))
+            else
+                println(Crayons.crayon"bold green"("\n[+] Found $(length(brute_subdomains)) subdomains for $domain:\n"))
+                for sub in brute_subdomains
+                    println(Crayons.crayon"cyan"(" - $sub"))
+                end
+            end
+        else
+            println("Missing domain after -dns")
+            show_help()
+        end
+        return
+    elseif "-ss" in args
+        idx = findfirst(x -> x == "-ss", args)
+        if idx < length(args)
+            domain = args[idx+1]
+            println(Crayons.crayon"bold green"("\n[+] Scanning $domain and subdomains for vulnerabilities...\n"))
+            subdomains = get_subdomains(domain)
+            brute_subdomains = brute_force_subdomains(domain, "wordlist.txt")
+            all_subdomains = sort(union([domain], subdomains, brute_subdomains))
+            for sub in all_subdomains
+                scan_subdomain(sub)
+            end
+        else
+            println("Missing domain after -ss")
+            show_help()
+        end
+        return
+    else
+        println("Unknown or missing option.")
+        show_help()
+        return
+    end
+end
+
+# --- Main Program ---
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
 end
