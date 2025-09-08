@@ -19,7 +19,7 @@ using ThreadsX
 
 # Ensure there are workers for parallelism
 if nprocs() == 1
-    addprocs(4)  # Add 4 workers for parallel processing
+    addprocs(4)  # Add 4 workers for parallel processing ? test this !
 end
 
 @everywhere using HTTP, JSON3
@@ -44,7 +44,7 @@ const TEXT_LINES = [
     "⣿⣿⣿⣿⣟⠀⠀⠄⣡⡆⠆⠰⡤⢊⣧⡤⠈⠛⣛⠀⠀⣙⣽⣿⣿⣿⣿",
     "⣿⣿⣿⣿⣿⣿⣶⣧⣿⣿⡉⠑⣾⣟⣻⡇⣈⣭⣭⣶⣿⣿⣿⣿⣿⣿⣿",
 
-    # Meta text
+    # Meta text (better ascii need) 
     "Author: Muffin"
 ]
 
@@ -468,3 +468,4 @@ end
 if abspath(PROGRAM_FILE) == @__FILE__
     main()
 end
+
